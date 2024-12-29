@@ -1,31 +1,44 @@
-// Arrays to keep track of each task's state
-const taskTitles = [];
-const taskComplete = [];
+// Select elements
+const taskInput = document.getElementById("task-input");
+const addTaskBtn = document.getElementById("add-task-btn");
+const taskList = document.getElementById("task-list");
+const currentDate = document.getElementById("current-date");
 
-// Create a new task by adding to the arrays
-// A new task will be created as incomplete
-function newTask(title) {
-  taskTitles.push(title);
-  taskComplete.push(false);
-}
+// Display today's date
+const today = new Date();
+const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+currentDate.textContent = `Today is ${today.toLocaleDateString("en-US", options)}`;
 
-// Mark a task as complete by setting the task's status in the `taskComplete` array to `true`
-function completeTask(taskIndex) {
-  taskComplete[taskIndex] = true;
-}
+// Add a new task
+addTaskBtn.addEventListener("click", () => {
+  const taskText = taskInput.value.trim();
 
-// Print the state of a task to the console in a nice readable way
-function logTaskState(taskIndex) {
-  const title = taskTitles[taskIndex];
-  const complete = taskComplete[taskIndex];
-  console.log(`${title} has${complete ? " " : " not "}been completed`);
-}
+  if (taskText === "") {
+    alert("Please enter a task!");
+    return;
+  }
 
-// DRIVER CODE BELOW
+  // Create a new list item
+  const listItem = document.createElement("li");
+  listItem.innerHTML = `
+    ${taskText}
+    <button class="delete-btn">Delete</button>
+  `;
 
-newTask("Clean Cat Litter"); // task 0
-newTask("Do Laundry"); // task 1
+  // Add the new task to the list
+  taskList.appendChild(listItem);
 
-logTaskState(0); // Clean Cat Litter has not been completed
-completeTask(0);
-logTaskState(0); // Clean Cat Litter has been completed
+  // Clear the input field
+  taskInput.value = "";
+
+  // Add delete functionality
+  const deleteBtn = listItem.querySelector(".delete-btn");
+  deleteBtn.addEventListener("click", () => {
+    listItem.remove();
+  });
+
+  // Add "mark as completed" functionality
+  listItem.addEventListener("click", () => {
+    listItem.classList.toggle("completed");
+  });
+});
